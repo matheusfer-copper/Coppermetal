@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cardápio Março 2026 — Coppermetal</title>
+<title>Cardápio Março 2026 &mdash; Coppermetal</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -677,7 +677,7 @@
     <p>Coppermetal · 2026 · Nutricionista Milena Viana CRN3 64452</p>
   </div>
   <div class="header-right">
-    <span class="today-badge" id="todayBadge">—</span>
+    <span class="today-badge" id="todayBadge">&mdash;</span>
     <button class="btn-rh" onclick="openRH()">📋 Painel RH</button>
   </div>
 </header>
@@ -698,7 +698,7 @@
   <div class="modal">
     <div class="modal-header">
       <div>
-        <h2>📋 Painel RH — Março 2026</h2>
+        <h2>📋 Painel RH &mdash; Março 2026</h2>
         <p>Todas as escolhas registradas no mês</p>
       </div>
       <button class="btn-close" onclick="closeRH()">✕</button>
@@ -958,7 +958,7 @@ async function confirmChoice(key) {
 
   const msgEl = document.getElementById('msg-' + key);
   msgEl.className = 'confirmed-msg show';
-  msgEl.innerHTML = '✅ Escolha confirmada: <strong>' + opcao + '</strong> — ' + getPratoLabel(key, opcao);
+  msgEl.innerHTML = '✅ Escolha confirmada: <strong>' + opcao + '</strong> &mdash; ' + getPratoLabel(key, opcao);
   btn.textContent = 'Confirmar Escolha';
 }
 
@@ -984,7 +984,7 @@ async function restoreChoices() {
     document.querySelectorAll('#panel-' + e.dia + ' .choice-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     const msgEl = document.getElementById('msg-' + e.dia);
-    if (msgEl) { msgEl.className = 'confirmed-msg show'; msgEl.innerHTML = '✅ Escolha confirmada: <strong>' + e.opcao + '</strong> — ' + getPratoLabel(e.dia, e.opcao); }
+    if (msgEl) { msgEl.className = 'confirmed-msg show'; msgEl.innerHTML = '✅ Escolha confirmada: <strong>' + e.opcao + '</strong> &mdash; ' + getPratoLabel(e.dia, e.opcao); }
     const btn = document.getElementById('btn-' + e.dia);
     if (btn) btn.disabled = true;
   });
@@ -1095,7 +1095,7 @@ async function exportCSV() {
   ].join('
 ');
 
-  const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8;'});
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'cardapio_marco_2026_relatorio.csv';
