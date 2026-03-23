@@ -667,6 +667,17 @@
     .rh-stats { grid-template-columns: repeat(3,1fr); }
     .modal { width: 96%; max-height: 92vh; }
   }
+  @media (max-width: 480px) {
+    .choice-cards { grid-template-columns: 1fr; gap: 10px; }
+    .choice-card { padding: 14px 16px; text-align: left; display: flex; align-items: center; gap: 14px; }
+    .choice-letter { width: 42px; height: 42px; font-size: 1.2rem; flex-shrink: 0; margin: 0; }
+    .choice-card .choice-prato { margin-top: 2px; }
+    .check-icon { top: 50%; transform: translateY(-50%); }
+    .day-bars { display: none; }
+    .day-row-header { flex-wrap: wrap; gap: 6px; }
+    .rh-stats { grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .stat-num { font-size: 1.4rem; }
+  }
 </style>
 </head>
 <body>
@@ -816,6 +827,11 @@ async function saveEscolha(nome, dia, opcao, prato) {
 }
 
 // ===================== HELPERS =====================
+function escapeHTML(str) {
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+  })[m]);
+}
 function getPratoLabel(key, opcao) {
   const d = cardapio[key];
   if (!d) return '';
@@ -947,6 +963,7 @@ function selectChoice(key, opcao) {
 async function confirmChoice(key) {
   const nome = document.getElementById('nomeInput').value.trim();
   if (!nome) { alert('Por favor, informe seu nome antes de confirmar.'); document.getElementById('nomeInput').focus(); return; }
+  localStorage.setItem('cardapio_nome', nome);
   const opcao = pendingChoices[key];
   if (!opcao) return;
 
@@ -958,7 +975,7 @@ async function confirmChoice(key) {
 
   const msgEl = document.getElementById('msg-' + key);
   msgEl.className = 'confirmed-msg show';
-  msgEl.innerHTML = '&#9989; Escolha confirmada: <strong>' + opcao + '</strong> &mdash; ' + getPratoLabel(key, opcao);
+  msgEl.innerHTML = '&#10003; Escolha confirmada: <strong>' + escapeHTML(opcao) + '</strong> &mdash; ' + escapeHTML(getPratoLabel(key, opcao));
   btn.textContent = 'Confirmar Escolha';
 }
 
@@ -984,7 +1001,7 @@ async function restoreChoices() {
     document.querySelectorAll('#panel-' + e.dia + ' .choice-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     const msgEl = document.getElementById('msg-' + e.dia);
-    if (msgEl) { msgEl.className = 'confirmed-msg show'; msgEl.innerHTML = '&#9989; Escolha confirmada: <strong>' + e.opcao + '</strong> &mdash; ' + getPratoLabel(e.dia, e.opcao); }
+    if (msgEl) { msgEl.className = 'confirmed-msg show'; msgEl.innerHTML = '&#10003; Escolha confirmada: <strong>' + escapeHTML(e.opcao) + '</strong> &mdash; ' + escapeHTML(getPratoLabel(e.dia, e.opcao)); }
     const btn = document.getElementById('btn-' + e.dia);
     if (btn) btn.disabled = true;
   });
@@ -1110,6 +1127,13 @@ async function clearAll() {
 // ===================== INIT =====================
 document.addEventListener('DOMContentLoaded', () => {
   buildUI();
+
+  // Restaura nome salvo
+  const nomeSalvo = localStorage.getItem('cardapio_nome');
+  if (nomeSalvo) {
+    document.getElementById('nomeInput').value = nomeSalvo;
+    restoreChoices();
+  }
 
   document.getElementById('nomeInput').addEventListener('input', () => {
     clearTimeout(nomeTimer);
